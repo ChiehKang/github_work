@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/addColumn"
+        android:title="新增欄位"
+        />
+
+    <item
+        android:id="@+id/deleteColumn"
+        android:title="刪除欄位"
+        />
+
+    <item
+        android:id="@+id/clearColumn"
+        android:title="清空內容"
+        />
+
+</menu>

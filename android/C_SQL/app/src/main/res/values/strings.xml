@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">C_SQL</string>
+
+    <string name="dialog_spinner_title">Spinner 選擇資料種類</string>
+    <string-array name="dialog_spinner_list">
+        <item>Text</item>
+        <item>Integer</item>
+        <item>Real</item>
+        <item>Date</item>
+        <item>Phone</item>
+    </string-array>
+
+</resources>
