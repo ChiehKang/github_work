@@ -5,23 +5,43 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:id="@+id/action_add"
+            android:id="@+id/action_table_add"
             android:icon="@drawable/ic_add"
             android:title="新增資料表"
             app:showAsAction="ifRoom"
             />
 
         <item
-            android:id="@+id/action_edit"
+            android:id="@+id/action_table_choose"
             android:icon="@drawable/ic_edit"
             android:title="選擇資料表"
             app:showAsAction="ifRoom"
             />
 
         <item
-            android:id="@+id/action_remove"
+            android:id="@+id/action_table_remove"
             android:icon="@drawable/ic_remove"
             android:title="刪除資料表"
+            app:showAsAction="ifRoom"
+            />
+        <item
+            android:id="@+id/action_column_add"
+            android:icon="@drawable/ic_add"
+            android:title="新增欄位"
+            app:showAsAction="ifRoom"
+            />
+
+        <item
+            android:id="@+id/action_date_add"
+            android:icon="@drawable/ic_add"
+            android:title="新增資料"
+            app:showAsAction="ifRoom"
+            />
+
+        <item
+            android:id="@+id/action_date_clear"
+            android:icon="@drawable/ic_remove"
+            android:title="清除資料"
             app:showAsAction="ifRoom"
             />
     </group>

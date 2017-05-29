@@ -31,6 +31,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
@@ -61,16 +62,24 @@ public class MainActivity extends AppCompatActivity {
     private AlertDialog dialogColumn;
     private AlertDialog dialogData;
 
+
     private Spinner spinner;
+    private ListView listView;
+    //private ArrayAdapter<String> listAdapter;
+    //private PopupMenu columnPopupMenu;
     private DatePickerDialog datePickerDialog;
     private EditText et_data;
     private EditText et_column;
-    private  ListView listView;
+
 
     private String tableName;
     private ArrayList<String> tableList;
     private int cTypeNum = 1;
-
+    /*
+    private String db_id;
+    private String db_cName;
+    private int db_type;
+    */
     private String _temp;
     private String _temp2;
     private int dataLength;
@@ -136,11 +145,14 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
         //取得tableList
         tableName="jay";
         tableList = new ArrayList();
+
         cTypeNum = 1;
-        dataLength=512;
+
+        dataLength=8;
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -159,11 +171,13 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
                 switch (item.getItemId()) {
-                    case R.id.action_add:
+                    //新增資料表
+                    case R.id.action_table_add:
                         createTable(toolbar);
                         break;
+
                     //選擇資料表
-                    case R.id.action_edit:
+                    case R.id.action_table_choose:
                         tableList.clear();
                         getTableList();
                         chooseTable(toolbar);
@@ -171,7 +185,8 @@ public class MainActivity extends AppCompatActivity {
                         mDrawer.closeDrawer(Gravity.LEFT);
                         break;
 
-                    case R.id.action_remove:
+                    //刪除資料表
+                    case R.id.action_table_remove:
                         try {
                             String output = "";
                             DBhelper.getWritableDatabase().execSQL("DROP TABLE IF EXISTS " + tableName);
@@ -191,13 +206,56 @@ public class MainActivity extends AppCompatActivity {
                         }catch (Exception ex){};
 
                         mDrawer.closeDrawer(Gravity.LEFT);
+                        break;
 
+                    //新增欄位
+                    case R.id.action_column_add:
+                        try {
+                            dialogColumn.setTitle("新增欄位");
+                            dialogColumn.setButton(DialogInterface.BUTTON_NEGATIVE, "確定", new OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    String insert = et_column.getText().toString();
+                                    et_column.getText().clear();
+                                    try {
+                                        if (insert != "") {
+                                            DBhelper.getWritableDatabase().execSQL("ALTER TABLE " + tableName + " ADD " + insert + " VCHAR(40)");
+                                            DBhelper.getWritableDatabase().execSQL("UPDATE " + tableName + " SET " + insert + " = '" + cTypeNum + "' WHERE id = 0;");
+                                            print_table();
+                                            print_table();
+                                        }
+                                    }catch (Exception ex) {
+                                        Toast.makeText(MainActivity.this, ex.toString(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                            dialogColumn.show();
+                        }catch (Exception ex) {
+                            Toast.makeText(MainActivity.this, ex.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                        mDrawer.closeDrawer(Gravity.LEFT);
+                        break;
+
+                    case R.id.action_date_add:
+                        try {
+                            cursor = DBhelper.getReadableDatabase().query(tableName, null, null, null, null, null, null);
+                            DBhelper.getWritableDatabase().execSQL("INSERT INTO " + tableName + "(id) VALUES (" + (cursor.getCount()) + ")");
+                            cursor.close();
+                            print_table();
+                        }catch (Exception ex) {
+                            Toast.makeText(MainActivity.this, ex.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                        mDrawer.closeDrawer(Gravity.LEFT);
+                        break;
+
+                    case R.id.action_date_clear:
+                        mDrawer.closeDrawer(Gravity.LEFT);
                         break;
                 }
                 return false;
             }
         });
-        //下方導覽欄
+
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -213,13 +271,13 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "ouput:" + output + "\ncount:" + output.length(), Toast.LENGTH_LONG).show();
                         break;
 
-                    //新增欄位
                     case R.id.action_edit:
 
                         try {
                             int length = -1;
                             String input = "";
                             byte[] buffer = new byte[dataLength];
+                            //inputStream = new FileInputStream("table_list");
                             inputStream = openFileInput("table_list");
                             while((length = inputStream.read(buffer)) != -1) {
                                 input += new String(buffer, "UTF-8");
@@ -232,7 +290,19 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                     case R.id.action_remove:
-
+                        //tableList.clear();
+                        /*
+                        tableList.removeAll(tableList);
+                        try {
+                            String clear = "";
+                            outputStream = openFileOutput("table_list", Context.MODE_PRIVATE);
+                            outputStream.write(clear.getBytes());
+                            outputStream.close();
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                        getTableList();
+                        */
                         break;
                 }
                 return false;
@@ -241,8 +311,6 @@ public class MainActivity extends AppCompatActivity {
         if(tableName != null) {
             print_table();
         }
-
-        chooseTable(toolbar);
     }
 
     @Override
@@ -254,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            //增加欄位
+            //增加資料
             case R.id.action_add:
                 try {
                     cursor = DBhelper.getReadableDatabase().query(tableName, null, null, null, null, null, null);
@@ -265,7 +333,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, ex.toString(), Toast.LENGTH_SHORT).show();
                 }
                 break;
-
+            //新增欄位
             case R.id.action_edit:
                 try {
                     dialogColumn.setTitle("新增欄位");
@@ -328,7 +396,7 @@ public class MainActivity extends AppCompatActivity {
                 //Print 內容
                 while (cursor.moveToNext()) {
                     TableRow tr_date = new TableRow(MainActivity.this);
-                    tr_date.setPadding(1, 20, 0, 20);
+                    //tr_date.setPadding(0, 5, 0, 5);
                     for (int i = 1; i < count; i++)
                         setTextView(tr_date, cursor.getString(i), cursor.getPosition(), cursor.getColumnName(i), dataType[i]);
                     tableLayout.addView(tr_date);
@@ -337,9 +405,71 @@ public class MainActivity extends AppCompatActivity {
             cursor.close();
             return true;
         }catch(Exception ex){
+            //Toast.makeText(MainActivity.this, ex.toString(), Toast.LENGTH_SHORT).show();
             return false;
         }
 
+    }
+    //setTextView(Table名稱, Data內容, id編號, 欄位名稱, 資料Type)
+    public void setTextView(TableRow tableRow, final Cursor cursor, final int count, final String type) {
+        /*
+        TextView tv = new TextView(MainActivity.this);
+        tv.setLayoutParams( new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+
+        tv.setTextSize(20);
+        tv.setMinWidth(40);
+        tv.setMinHeight(40);
+
+        tv.setText(cursor.getString(count));
+        tv.setClickable(true);
+        //OnClick 修改資料內容
+        tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogData.setTitle(cursor.getColumnName(count)+" "+type+" "+cursor.getPosition());
+                //修改輸入Type
+                switch (type) {
+                    case "Text":
+                        et_data.setInputType(InputType.TYPE_CLASS_TEXT);
+                        break;
+
+                    case "Integer":
+                        et_data.setInputType(InputType.TYPE_CLASS_NUMBER);
+                        break;
+
+                    case "Real":
+                        et_data.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                        break;
+
+                    case "Date":
+                        et_data.setInputType(InputType.TYPE_DATETIME_VARIATION_DATE);
+                        break;
+
+                    case "Phone":
+                        et_data.setInputType(InputType.TYPE_CLASS_PHONE);
+                        break;
+                }
+                //自動彈出內容
+                et_data.requestFocus();
+                dialogData.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+                dialogData.setButton(DialogInterface.BUTTON_NEGATIVE, "確定", new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String msg = et_data.getText().toString();
+                        et_data.getText().clear();
+                        try {
+                            DBhelper.getWritableDatabase().execSQL("UPDATE " + tableName + " SET " + cursor.getColumnName(count) + " = '" + msg + "' WHERE id = "+ (cursor.getPosition() + 1) +";" );
+                            print_table();
+                        }catch (Exception ex) {Toast.makeText(MainActivity.this, ex.toString(), Toast.LENGTH_SHORT).show();}
+                    }
+                });
+                dialogData.show();
+                //Toast.makeText(MainActivity.this, " 第"+id+"筆資料 :"+columnName, Toast.LENGTH_SHORT).show();
+            }
+        });
+        tableRow.addView(tv);
+        */
     }
     //setTextView(TableRow, 欄位名稱, 欄位count)
     public void setTextView(TableRow tableRow, final String cName, final int count) {
@@ -349,10 +479,13 @@ public class MainActivity extends AppCompatActivity {
         tv.setTextSize(20);
         tv.setMinWidth(100);
         tv.setMinHeight(40);
-        tv.setPadding(20, 20, 20, 20);
+        tv.setPadding(15, 0, 15, 0);
 
         tv.setTextColor(Color.WHITE);
         tv.setBackgroundColor(Color.BLACK);
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams)tv.getLayoutParams();
+        layoutParams.leftMargin = 10;
+        layoutParams.bottomMargin =10;
 
         tv.setText(cName);
         tv.setClickable(true);
@@ -427,9 +560,14 @@ public class MainActivity extends AppCompatActivity {
         tv.setMinWidth(100);
         tv.setMinHeight(40);
 
-        tv.setPadding(0, 10, 0, 10);
+        tv.setPadding(15, 0, 15, 0);
         tv.setTextColor(Color.WHITE);
         tv.setBackgroundColor(Color.BLACK);
+
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams)tv.getLayoutParams();
+        layoutParams.leftMargin = 10;
+        layoutParams.bottomMargin = 10;
+
 
         tv.setText(msg);
         tv.setClickable(true);
@@ -465,6 +603,8 @@ public class MainActivity extends AppCompatActivity {
                         datePickerDialog.show();
                         break;
                 }
+
+
             }
         });
 
@@ -626,6 +766,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         tableName = tableList.get(which);
                         _toolbar.setSubtitle(tableName);
+                        //Toast.makeText(MainActivity.this, "你選的是" + tableList.get(which), Toast.LENGTH_SHORT).show();
                         if (!print_table()) {
                             Toast.makeText(MainActivity.this, "查無資料表: " + tableName, Toast.LENGTH_SHORT).show();
                             tableList.remove(tableName);
@@ -642,11 +783,12 @@ public class MainActivity extends AppCompatActivity {
         try {
             int length = -1;
             String input = "";
-            byte[] buffer = new byte[dataLength];
+            byte[] buffer = new byte[512];
             inputStream = openFileInput("table_list");
             while((length = inputStream.read(buffer)) != -1) {
                 String tempString = new String(buffer, 0, length, "UTF-8");
                 input += tempString;
+                //Toast.makeText(MainActivity.this, tempString, Toast.LENGTH_LONG).show();
             }
             inputStream.close();
             String[] nameList = input.split(",");
