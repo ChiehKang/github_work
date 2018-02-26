@@ -1,0 +1,10 @@
+com\chieh\umdp\system\dao\UserDao.class
+com\chieh\dream\system\facade\UserFacade.class
+com\chieh\dream\system\service\UserService.class
+com\chieh\umdp\generic\been\TableResult.class
+com\chieh\dream\system\facade\impl\UserFacadeImpl.class
+com\chieh\dream\system\service\impl\UserServiceImpl.class
+com\chieh\dream\system\action\UserAction.class
+com\chieh\umdp\generic\been\TableState.class
+com\chieh\umdp\system\dao\impl\UserDaoImpl.class
+com\chieh\umdp\generic\entity\CurUser.class

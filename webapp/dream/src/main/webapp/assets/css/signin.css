@@ -1,0 +1,12 @@
+html, body {
+	background-color: #f5f5f5;
+}
+
+.form-signin {
+	height: -webkit-fill-available; 
+	display : flex;
+	align-items: center;
+	justify-content: center;
+	padding: 15px;
+	display: flex;
+}

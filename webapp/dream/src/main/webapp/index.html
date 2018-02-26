@@ -1,0 +1,86 @@
+<html ng-app="myApp">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<script src="http://code.jquery.com/jquery-3.3.1.min.js"
+	integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+	crossorigin="anonymous"></script>
+<script src="assets/plugins/angular.min.js"></script>
+<script src="https://code.angularjs.org/1.2.17/angular-route.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.3/angular-ui-router.js"></script>
+<script src="assets/plugins/bootstrap.min.js"></script>
+
+
+<!-- AngularJS -->
+<script src="app/app.module.js"></script>
+<script src="app/app.config.js"></script>
+<script src="app/app.route.js"></script>
+
+<script src="app/app-ctrl.js"></script>
+<script src="app/modules/home/home-ctrl.js"></script>
+<script src="app/modules/pageOne/pageOne-ctrl.js"></script>
+<script src="app/modules/pageTwo/pageTwo-ctrl.js"></script>
+<script src="app/modules/user/login-ctrl.js"></script>
+<script src="app/modules/user/user-ctrl.js"></script>
+
+<!-- CSS -->
+<link href="assets/plugins/bootstrap.min.css" rel="stylesheet">
+<link href="assets/css/signin.css" rel="stylesheet">
+
+</head>
+<body>
+	<div id="loading"></div>
+	<div ng-cloak ng-controller="AppCtrl" ng-init="load()">
+		<!--登入表单 -->
+		<div ng-if="!isLogin" , ng-controller="LoginCtrl">
+		<div class="box-wrap form-signin">
+			<form>
+				<img class="mb-4"
+					src="https://getbootstrap.com/assets/brand/bootstrap-solid.svg"
+					alt="" width="72" height="72">
+				<h1 class="h3 mb-3 font-weight-normal">My Web</h1>
+				<input ng-model="account" type="text" id="inputAccount"
+					class="form-control" placeholder="Account"> <input
+					ng-model="password" type="password" id="inputPassword"
+					class="form-control" placeholder="Password">
+				<div class="checkbox mb-3">
+					<label> 
+						<input type="checkbox" value="remember-me"> Remember me
+					</label>
+				</div>
+				<button ng-click="login()" class="btn btn-lg btn-primary btn-block"
+					type="submit">Login</button>
+				<p class="mt-5 mb-3 text-muted">© 2018-02-22</p>
+			</form>
+			<div>{{errMsg}}</div>
+			</div>
+		</div>
+		
+		<div ng-if="isLogin" ng-controller="UserCtrl">
+				<header class="navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar">
+					<div class="col-md-10"> 我是顶部菜单 Hi, {{userName}} </div>
+					<div class="col-md-2"> <button ng-click="logout()" type="submit">Logout</button> </div>
+				</header>
+				
+				<div class="container-fluid">
+					<div class="row flex-xl-nowrap">
+					
+						<div class="col-md-3 bd-sidebar">
+							<div>我是侧边栏</div>
+							<nav class="collapse.show bd-links">
+							  <div class="nav-item" ng-repeat="page in pageList">
+							  	<a class="nav-link" href="{{page.url}}">{{page.name}}</a>
+							  </div>
+							</nav>
+						</div>
+						
+						<main class="col-md-9 py-md-3 pl-md-5 bd-content" role="main">
+							<div ui-view class="md-padding"></div>
+						</main>
+					</div>
+				</div>
+		</div>
+	</div>
+
+</body>
+</html>
