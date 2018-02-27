@@ -9,7 +9,7 @@
 <script src="https://code.angularjs.org/1.2.17/angular-route.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.3/angular-ui-router.js"></script>
 <script src="assets/plugins/bootstrap.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 
 <!-- AngularJS -->
 <script src="app/app.module.js"></script>
@@ -24,7 +24,9 @@
 <script src="app/modules/user/user-ctrl.js"></script>
 
 <!-- CSS -->
-<link href="assets/plugins/bootstrap.min.css" rel="stylesheet">
+<!-- <link href="assets/plugins/bootstrap.min.css" rel="stylesheet"> -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
 <link href="assets/css/signin.css" rel="stylesheet">
 
 </head>
@@ -57,25 +59,25 @@
 		</div>
 		
 		<div ng-if="isLogin" ng-controller="UserCtrl">
-				<header class="navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar">
-					<div class="col-md-10"> 我是顶部菜单 Hi, {{userName}} </div>
-					<div class="col-md-2"> <button ng-click="logout()" type="submit">Logout</button> </div>
-				</header>
+				<nav class="navbar fixed-top flex-md-nowrap bg-white border-bottom box-shadow">
+					<div class="mr-auto"> 我是頂端列   Hi, {{userName}} </div>
+					<div></div>
+					<div class="col-auto"> <button ng-click="logout()" type="submit">Logout</button> </div>
+				</nav>
 				
 				<div class="container-fluid">
-					<div class="row flex-xl-nowrap">
-					
-						<div class="col-md-3 bd-sidebar">
-							<div>我是侧边栏</div>
-							<nav class="collapse.show bd-links">
-							  <div class="nav-item" ng-repeat="page in pageList">
-							  	<a class="nav-link" href="{{page.url}}">{{page.name}}</a>
-							  </div>
+					<div class="row">
+	
+						<div class="col-md-2 d-none d-md-block bg-light sidebar">
+							<nav class="sidebar-sticky collapse.show bd-links">
+								<div class="nav-item" ng-repeat="page in pageList">
+									<a class="nav-link" href="{{page.url}}">{{page.name}}</a>
+								</div>
 							</nav>
 						</div>
-						
-						<main class="col-md-9 py-md-3 pl-md-5 bd-content" role="main">
-							<div ui-view class="md-padding"></div>
+	
+						<main role="main" class="col-md-9 ml-sm-auto view">
+								<div ui-view class="md-padding"></div>
 						</main>
 					</div>
 				</div>
